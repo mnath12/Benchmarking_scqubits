@@ -73,15 +73,15 @@ full = scipy_option_tester(ZeroPi, dims, 1)
 
 
 
-# In[ ]:
+# In[6]:
 
 
-def generate_plot(times, dims):
-    plt.plot((dims*2+1)**3, times, 'o-')
-    plt.xlabel("Hilbert Space Dimension")
-    plt.ylabel("Ratio of Time of SA to Time of LM")
-    plt.title("Hilbert Dimension vs Time Ratio for SA and LM")
-    plt.savefig("benchmark SA vs LM.png")
+def generate_plot(times, dims, x_label, y_label, title, file_name):
+    plt.plot((dims*2+1)**3, times, 'o-') # How does this work for each qubit? Dims vs grid pt ct...?
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.savefig(file_name)
     plt.show()
     return None
 
@@ -97,10 +97,10 @@ plt.savefig("Tmon benchmark SA vs LM.png")
 plt.show()
 
 
-# In[6]:
+# In[7]:
 
 
-def primme_heat_map(qubit, shape, N, energies, ncuts):
+def primme_benchmarker(qubit, shape, N, energies, ncuts):
     # shape: tuple with size of matrix (m,n)
     # N: averaging
     times_a = np.empty(shape = shape)
@@ -164,15 +164,86 @@ np.save("full_heat_map_matrix", Full_Zero_pi_heatmap)
 # In[9]:
 
 
-A = np.load("full_heat_map_matrix.npy")
-im = plt.imshow(A, extent = [ncuts.min(), ncuts.max(), energies.min(), energies.max()], aspect = 10)
-plt.title(r"Heat Map with Hamiltonian Dim, $E_J$, and Relative Time")
-plt.xlabel("")
-plt.colorbar(im, label = "Ratio of PRIMME and Eigsh Time")
-plt.xlabel(r"$n_{cut}$", size = 20)
-plt.ylabel(r"$E_{J}$ (GHz)", size = 20)
-plt.savefig('heat_map_primme_full.png')
 
+
+
+# In[13]:
+
+
+# Generates a heatmap of PRIMME performance given an appropriate matrix
+def generate_heatmap(matrix, ncuts, energies, title, xlabel, ylabel, heatLabel, filename):
+    im = plt.imshow(matrix, extent = [ncuts.min(), ncuts.max(), energies.min(), energies.max()], aspect = 10)
+    plt.title(title)
+    plt.xlabel("")
+    plt.colorbar(im, label = heatLabel)
+    plt.xlabel(xlabel, size = 20)
+    plt.ylabel(ylabel, size = 20)
+    plt.savefig(filename)
+    return None
+
+
+# # Full 0-Pi
+
+# ## SA vs LM
+
+# In[12]:
+
+
+scipy_option_tester(full, np.array([10,20,30,40,50,60,70]) , 1)
+
+
+# In[10]:
+
+
+energies = np.linspace(.125, .75, 10)
+ncuts = ncuts = np.array([20,30,40,50,60])
+
+
+# ## Eigsh vs PRIMME
+
+# In[12]:
+
+
+matrix = primme_benchmarker(full, (10,5), 1, energies, ncuts)
+    
+
+
+# In[15]:
+
+
+generate_heatmap(matrix, ncuts, energies, "Test", "energies", "ncuts", "ratio", "function test")
+
+
+# # Snailmon Benchmarks
+
+# ## SA vs LM
+# 
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# ## Eigsh vs PRIMME
 
 # In[ ]:
 
