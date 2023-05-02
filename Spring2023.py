@@ -23,6 +23,9 @@ def scipy_option_tester(qubit, dims, N):
     times_1 = np.zeros_like(dims, dtype=float)
     times_2 = np.zeros_like(dims, dtype=float)
     for i, dim in enumerate(dims):
+        #IMS: add change of qubit cutoffs according to below for loop
+        #for ncut in qubit.cutoff_names:
+            #qubit.__dict__["_" + ncut] = dim
         hamiltonian = qubit.hamiltonian()
         start_time_1 = time()
         for j in range(N):
@@ -34,6 +37,8 @@ def scipy_option_tester(qubit, dims, N):
             sp.sparse.linalg.eigsh(hamiltonian, k=6, which="SA")
         end_time_2 = time()
         times_2[i] = (end_time_2-start_time_2)/N
+        
+        #IMS: relabel times variable below
         times[i] = times_2[i]/times_1[i]
         print(f"Time ratio (SA/LM) {times[i]:.2f} for {dim:.0f}x{dim:.0f}")
     return times
