@@ -13,28 +13,7 @@ import matplotlib.pyplot as plt
 from time import time
 import time as tm
 from tqdm.notebook import tqdm
-
-
-# In[2]:
-
-
 import primme as pr
-
-
-# In[3]:
-
-
-ZeroPi = scq.ZeroPi.create()
-
-
-# In[4]:
-
-
-full = scq.FullZeroPi.create()
-
-
-# In[5]:
-
 
 def scipy_option_tester(qubit, dims, N):
     # qubit: sparse qubit to be tested for SA vs LM
@@ -58,28 +37,10 @@ def scipy_option_tester(qubit, dims, N):
         times[i] = times_2[i]/times_1[i]
         print(f"Time ratio (SA/LM) {times[i]:.2f} for {dim:.0f}x{dim:.0f}")
     return times
-
-
-# In[6]:
-
-
-dims = np.array([10,20,30,40,50,60,70])
-full = scipy_option_tester(ZeroPi, dims, 1)
-
-
-# In[ ]:
-
-
-
-
-
-# In[6]:
-
-
 def generate_plot(times, dims, x_label, y_label, title, file_name):
     plt.plot((dims*2+1)**3, times, 'o-') # How does this work for each qubit? Dims vs grid pt ct...?
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     plt.title(title)
     plt.savefig(file_name)
     plt.show()
@@ -127,8 +88,8 @@ def primme_benchmarker(qubit, shape, N, energies, ncuts):
 # In[6]:
 
 
-energies = energies = np.linspace(13.5, 16.5, 10)
-ncuts = ncuts = np.array([20,30,40,50,60])
+energies = np.linspace(13.5, 16.5, 10)
+ncuts = np.array([20,30,40,50,60])
 Zero_pi_heatmap = primme_heat_map(ZeroPi, (10, 5), 1, energies, ncuts)
 np.save("heat_map_matrix", Zero_pi_heatmap)
 
