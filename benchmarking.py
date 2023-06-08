@@ -137,10 +137,11 @@ def primme_benchmarker(qubit, names_list, vals_list, avg_num):
         avg_num: increase or decreasing averaging, integer between 1 and infinity '''
     len_vals_list = [len(list) for list in vals_list]
     items = np.prod(len_vals_list)
+    print(f"There should be {items} iterations")
     time_ratios = np.zeros(items)
     array_shape = tuple([len(list) for list in vals_list])
         
-    for i, vals_set in enumerate(product(*vals_list)):
+    for i, vals_set in enumerate(tqdm(product(*vals_list), leave=True)):
         for j, value in enumerate(vals_set):
             setattr(qubit, names_list[j], value)
 
@@ -166,12 +167,25 @@ def primme_benchmarker(qubit, names_list, vals_list, avg_num):
      
 
 # Generates a heatmap of PRIMME performance given an appropriate matrix
-def generate_heatmap(matrix, ncuts, energies, title, xlabel, ylabel, heatLabel, filename):
-    im = plt.imshow(matrix, extent = [ncuts.min(), ncuts.max(), energies.min(), energies.max()], aspect = 10)
+def generate_heatmap(array, title, x_vals, y_vals, xlabel, ylabel, heatLabel, filename):
+   
+    """ im = plt.imshow(matrix, extent = [x_vals.min(), x_vals.max(), y_vals.min(), y_vals.max()], aspect = aspect)
     plt.title(title)
     plt.xlabel("")
     plt.colorbar(im, label = heatLabel)
     plt.xlabel(xlabel, size = 20)
     plt.ylabel(ylabel, size = 20)
     plt.savefig(filename)
+ """
+    x, y = np.meshgrid(x_vals, y_vals)
+    z = array
+    fig, ax = plt.subplots()
+    ax.set_title(title)
+    plt.pcolormesh(x, y, z, cmap='OrRd', vmin = 0, 
+                                        vmax = np.abs(z).max())
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    plt.colorbar(label = heatLabel)
+    plt.savefig(filename)
+    plt.show()
     return None
